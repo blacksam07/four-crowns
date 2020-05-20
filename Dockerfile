@@ -51,7 +51,3 @@ RUN echo 'eval "$(rbenv init -)"' >> /etc/profile.d/rbenv.sh
 RUN for i in $RUBY_VERSIONS; do rbenv install $i && rbenv global $i && gem install $BUNDLER_VERSIONS; done
 
 WORKDIR /app
-
-COPY docker-entrypoint.sh /
-
-ENTRYPOINT ["/docker-entrypoint.sh"]
