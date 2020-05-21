@@ -49,5 +49,3 @@ RUN git clone --depth 1 https://github.com/rbenv/rbenv.git ${RBENV_ROOT} \
 RUN echo 'eval "$(rbenv init -)"' >> /etc/profile.d/rbenv.sh 
 
 RUN for i in $RUBY_VERSIONS; do rbenv install $i && rbenv global $i && gem install $BUNDLER_VERSIONS; done
-
-WORKDIR /
