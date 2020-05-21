@@ -50,4 +50,4 @@ RUN echo 'eval "$(rbenv init -)"' >> /etc/profile.d/rbenv.sh
 
 RUN for i in $RUBY_VERSIONS; do rbenv install $i && rbenv global $i && gem install $BUNDLER_VERSIONS; done
 
-WORKDIR /var/lib/jenkins/workspace/backend-metrics
+WORKDIR /
