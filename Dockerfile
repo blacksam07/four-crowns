@@ -3,8 +3,15 @@ LABEL version="2.0"
 LABEL description="Containt NodeJs, Ruby with rbenv, Python and Java"
 LABEL maintainer="https://github.com/blacksam07"
 
+ENV USER 498
+ENV GROUP 497
+ENV SU_USER su - $USER -c
 ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
 ENV PATH "$JAVA_HOME/bin:${PATH}"
+
+# User
+RUN addgroup $GROUP && \
+    adduser -h /home/$USER -s /bin/bash -G $GROUP -D $USER 
 
 RUN apk update \
 	&& apk add --update python2 python3 \
@@ -49,3 +56,5 @@ RUN git clone --depth 1 https://github.com/rbenv/rbenv.git ${RBENV_ROOT} \
 RUN echo 'eval "$(rbenv init -)"' >> /etc/profile.d/rbenv.sh 
 
 RUN for i in $RUBY_VERSIONS; do rbenv install $i && rbenv global $i && gem install $BUNDLER_VERSIONS; done
+
+RUN chown $USER.$GROUP /
