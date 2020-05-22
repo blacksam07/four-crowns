@@ -5,13 +5,12 @@ LABEL maintainer="https://github.com/blacksam07"
 
 ENV USER 498
 ENV GROUP 497
-ENV SU_USER su - $USER -c
+ENV USER_HOME /home/$USER
 ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
 ENV PATH "$JAVA_HOME/bin:${PATH}"
 
-# User
 RUN addgroup $GROUP && \
-    adduser -h /home/$USER -s /bin/bash -G $GROUP -D $USER 
+    adduser -h $USER_HOME -s /bin/bash -G $GROUP -D $USER 
 
 RUN apk update \
 	&& apk add --update python2 python3 \
@@ -34,9 +33,8 @@ RUN apk add --update \
     autoconf \
 && rm -rf /var/cache/apk/*
 
-# rbenv
-ENV PATH /usr/local/rbenv/shims:/usr/local/rbenv/bin:$PATH
-ENV RBENV_ROOT /usr/local/rbenv
+ENV PATH $USER_HOME/rbenv/shims:$USER_HOME/rbenv/bin:$PATH
+ENV RBENV_ROOT $USER_HOME/rbenv
 ENV RUBY_VERSIONS "2.5.3 2.5.4 2.5.5 2.5.6 2.6.3 2.6.5"
 ENV BUNDLER_VERSIONS "bundler:1.17.3 bundler:2.1.4"
 ENV CONFIGURE_OPTS --disable-install-doc
@@ -57,4 +55,4 @@ RUN echo 'eval "$(rbenv init -)"' >> /etc/profile.d/rbenv.sh
 
 RUN for i in $RUBY_VERSIONS; do rbenv install $i && rbenv global $i && gem install $BUNDLER_VERSIONS; done
 
-RUN mkdir /.npm && chown -R $USER.$GROUP /.npm
+RUN mkdir /.npm && chown -R $USER:$GROUP /.npm
