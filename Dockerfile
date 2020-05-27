@@ -31,6 +31,7 @@ RUN apk add --update \
     openssl-dev \
     zlib-dev \
     autoconf \
+    postgresql-dev \
 && rm -rf /var/cache/apk/*
 
 ENV PATH $USER_HOME/rbenv/shims:$USER_HOME/rbenv/bin:$PATH
