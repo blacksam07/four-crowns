@@ -56,3 +56,5 @@ RUN echo 'eval "$(rbenv init -)"' >> /etc/profile.d/rbenv.sh
 RUN for i in $RUBY_VERSIONS; do rbenv install $i && rbenv global $i && gem install $BUNDLER_VERSIONS; done
 
 RUN mkdir /.npm && chown -R $USER:$GROUP /.npm
+
+RUN chown -R $USER:$GROUP $RBENV_ROOT
