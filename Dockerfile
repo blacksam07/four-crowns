@@ -7,9 +7,16 @@ LABEL maintainer="https://github.com/blacksam07"
 # replace shell with bash so we can source files
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
  
+RUN apt-get install -y git curl wget vim
+RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main' >> /etc/apt/sources.list.d/pgdg.list
+RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+
 # Update Software repository
 RUN apt-get update
-RUN apt-get install -y git curl libssl-dev libreadline-dev zlib1g-dev bison build-essential libyaml-dev libreadline-dev libncurses5-dev libffi-dev libgdbm-dev
+RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata
+RUN apt-get install -y bison libncurses5-dev libgdbm-dev  git-core zlib1g-dev build-essential \
+libxslt1-dev libcurl4-openssl-dev libffi-dev postgresql-client-common postgresql-client postgresql-12 libpq-dev \
+libssl-dev libreadline-dev libyaml-dev libxml2-dev
 
 # nvm environment variables
 ENV NVM_DIR /usr/local/nvm
@@ -29,7 +36,8 @@ RUN node -v
 RUN npm -v
 
 # rbenv environment variables
-ENV RUBY_VERSION 2.6.1
+ENV RUBY_VERSIONS "2.5.3 2.5.4 2.5.5 2.5.6 2.6.3 2.6.5"
+ENV BUNDLER_VERSIONS "bundler:1.17.3 bundler:2.1.4"
 
 # Install rbenv
 RUN git clone https://github.com/sstephenson/rbenv.git /usr/local/rbenv
@@ -48,8 +56,7 @@ ENV PATH "$RBENV_ROOT/bin:$RBENV_ROOT/shims:/usr/local/sbin:/usr/local/bin:/usr/
 
 RUN source /etc/profile.d/rbenv.sh
 
-RUN rbenv install $RUBY_VERSION
-RUN rbenv global $RUBY_VERSION
+RUN for i in $RUBY_VERSIONS; do rbenv install $i && rbenv global $i && gem install $BUNDLER_VERSIONS; done
 
 # Install Python
 RUN apt-get install -y python
@@ -61,5 +68,10 @@ RUN apt-get install -y default-jre && apt-get install -y default-jdk
 
 RUN java -version
 RUN javac -version
- 
-EXPOSE 80 443
+
+COPY docker-entrypoint.sh /usr/local/bin/
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+EXPOSE 5432
+
+CMD [ "postgres" ]
