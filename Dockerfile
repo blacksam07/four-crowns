@@ -7,16 +7,21 @@ LABEL maintainer="https://github.com/blacksam07"
 # replace shell with bash so we can source files
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
  
-RUN apt-get install -y git curl wget vim
+RUN apt-get update
+RUN apt-get install -y git curl wget vim build-essential
 RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main' >> /etc/apt/sources.list.d/pgdg.list
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 
 # Update Software repository
 RUN apt-get update
 RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata
-RUN apt-get install -y bison libncurses5-dev libgdbm-dev  git-core zlib1g-dev build-essential \
-libxslt1-dev libcurl4-openssl-dev libffi-dev postgresql-client-common postgresql-client postgresql-12 libpq-dev \
+RUN apt-get install -y bison libncurses5-dev libgdbm-dev  git-core libcurl4-openssl-dev \
+libffi-dev postgresql-client-common postgresql-client postgresql-12 libpq-dev \
 libssl-dev libreadline-dev libyaml-dev libxml2-dev
+
+RUN sed -i 's/local   all             postgres                                peer/local   all             postgres                                trust/' /etc/postgresql/12/main/pg_hba.conf
+RUN sed -i 's/local   all             all                                     peer/local   all             all                                     trust/' /etc/postgresql/12/main/pg_hba.conf
+RUN echo 'local   all             498                                trust' >> /etc/postgresql/12/main/pg_hba.conf
 
 # nvm environment variables
 ENV NVM_DIR /usr/local/nvm
@@ -73,5 +78,3 @@ COPY docker-entrypoint.sh /usr/local/bin/
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 EXPOSE 5432
-
-CMD [ "postgres" ]
