@@ -32,7 +32,10 @@ RUN apk add --update \
     zlib-dev \
     autoconf \
     postgresql-dev \
+    py-pip \
 && rm -rf /var/cache/apk/*
+
+RUN pip install requests
 
 ENV PATH $USER_HOME/rbenv/shims:$USER_HOME/rbenv/bin:$PATH
 ENV RBENV_ROOT $USER_HOME/rbenv
