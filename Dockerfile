@@ -6,19 +6,21 @@ LABEL maintainer="https://github.com/blacksam07"
 ENV USER 498
 ENV GROUP 497
 ENV USER_HOME /home/$USER
-ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
-ENV PATH "$JAVA_HOME/bin:${PATH}"
 
 RUN addgroup $GROUP && \
     adduser -h $USER_HOME -s /bin/bash -G $GROUP -D $USER 
 
 RUN apk update \
 	&& apk add --update python2 python3 \
-	&& apk fetch openjdk8 \
-	&& apk add openjdk8-jre \
+	&& apk fetch openjdk11 \
+	&& apk add openjdk11 \
 	&& python --version \
 	&& java -version \
+	$$ javac -version \
 	&& rm -rf /var/cache/apk/*
+
+ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk
+ENV PATH "$JAVA_HOME/bin:${PATH}"
 
 RUN apk add --update \
     bash \
