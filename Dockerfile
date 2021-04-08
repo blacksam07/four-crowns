@@ -35,9 +35,12 @@ RUN apk add --update \
     autoconf \
     postgresql-dev \
     py-pip \
+    py3-pip \
 && rm -rf /var/cache/apk/*
 
-RUN pip install requests enum
+RUN pip3 install --upgrade pip
+RUN pip3 install pyinstaller
+RUN pip3 install requests enum34
 
 ENV PATH $USER_HOME/rbenv/shims:$USER_HOME/rbenv/bin:$PATH
 ENV RBENV_ROOT $USER_HOME/rbenv
