@@ -64,8 +64,8 @@ RUN source /etc/profile.d/rbenv.sh
 RUN for i in $RUBY_VERSIONS; do rbenv install $i && rbenv global $i && gem install $BUNDLER_VERSIONS; done
 
 # Install Python
-RUN apt-get install -y python
-
+RUN apt-get install -y python python-pip
+RUN pip install enum
 RUN python --version
 
 # Install Java
